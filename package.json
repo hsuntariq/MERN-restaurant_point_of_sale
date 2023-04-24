@@ -1,0 +1,19 @@
+{
+  "name": "hotel-pos",
+  "version": "1.0.0",
+  "description": "point of sales",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hassan Tariq",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^7.0.4",
+    "nodemon": "^2.0.22"
+  }
+}
