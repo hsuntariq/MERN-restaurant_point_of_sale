@@ -4,7 +4,8 @@
   "description": "point of sales",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
   },
   "author": "Hassan Tariq",
   "license": "ISC",
