@@ -1,11 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap'
+import {useDispatch, useSelector} from 'react-redux'
+import {toast} from 'react-toastify'
 import '../../css/addProduct.css';
+import { postItems, resetState } from '../../features/items/itemSlice'
+import Loading from '../../components/Loading'
+import { BarWave } from 'react-cssfx-loading'
 const AddProduct = () => {
+    // initialize useSelector to dispatch the actions
+    const dispatch = useDispatch()
+    // handle the state value coming from the store
+    const { items, isLoading, isSuccess, isError, message } = useSelector(state => state.items);
     const [formFields, setFormFields] = useState({
         name:'',price:'',info:''
     });
+    // handle the sideEffects
+        useEffect(()=>{
+            if (isError) {
+                toast(message);
+            }
+            if (isSuccess) {
+                toast('data inserted successfully');
+                setFormFields({...formFields,name:'',price:'',info:''});
+                setImage(null);
+                setImagePreview(null);
+            }
+            dispatch(resetState())
+        },[isError,isSuccess,items,message,formFields,dispatch])
     // destructure the fields
     const { name, price, info } = formFields;
     const [image,setImage] = useState(null);
@@ -28,10 +50,12 @@ const AddProduct = () => {
         data.append('file', image);
         data.append('upload_preset', 'vgvxg0kj');
         try {
+            setUploading(true);
             let response = await fetch('https://api.cloudinary.com/v1_1/djo5zsnlq/image/upload', {
                 method: 'post',
                 body: data,
             });
+            setUploading(false);
             return response.url;
         } catch (error) {
             console.log(error)
@@ -40,9 +64,13 @@ const AddProduct = () => {
     // handle the submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-            // upload to cloudinary
-            const url = await uploadImage(image);
-            console.log(url)
+        // upload to cloudinary
+        const imageURL = await uploadImage(image);
+        // data to be sent to the backend
+        const itemData = {
+            name,price,info,imageURL
+        };
+            dispatch(postItems(itemData));
     }
     
     // handle state value
@@ -53,6 +81,11 @@ const AddProduct = () => {
         }))
     }
 
+    // show loading when inserting data
+    if(isLoading){
+        return <Loading/>
+    }
+    
 return (
     <>
         <Container>
@@ -112,9 +145,11 @@ return (
                                 }} src={image ? imagePreview : 'https://cdn-icons-png.flaticon.com/512/1377/1377194.png'} alt="" />
                             </div>
                         </Form.Group>
-                        <Button onClick={handleSubmit} variant="success mt-2" className='w-100'>
-                            Add Item
-                        </Button>
+                        {uploading ? <BarWave color="green" classname="my-5" style={{display:'flex',margin:'1rem auto'}} /> : <Button
+                            onClick={handleSubmit}
+                            variant="success"
+                            className="w-100 my-2"
+                        >Add Item</Button>}
                     </Form>
                 </Col>
                 <Col lg={6}>

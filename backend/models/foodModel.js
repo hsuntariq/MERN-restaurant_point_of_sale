@@ -13,7 +13,7 @@ const foodSchema = mongoose.Schema({
         type: String,
         required:[true,'please enter the dish info']
     },
-    image: {
+    imageURL: {
         type: String,
         required: false,
         default: 'https://cdn-icons-png.flaticon.com/512/1377/1377194.png',

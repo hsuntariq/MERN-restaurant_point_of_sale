@@ -11,9 +11,9 @@ const postFood =AsyncHandler(async(req, res) => {
         throw new Error('please fill out all the fields')
     }
     // get the info from the body
-    const { name, price, info, image } = req.body;
+    const { name, price, info, imageURL } = req.body;
     const food = await Food.create({
-        name, price, info, image
+        name, price, info, imageURL
     });
     res.status(200).json(food);
 });

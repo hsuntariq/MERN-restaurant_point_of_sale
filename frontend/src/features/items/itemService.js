@@ -7,9 +7,16 @@ const postItem = async (itemData) => {
         return response.data;
 }
 
+// get the items
+
+const getItems = async () => {
+    const response = await axios.get(API_URL);
+    return response.data;
+}
 
 const itemService = {
-    postItem
+    postItem,
+    getItems,
 }
 
 export default itemService;
