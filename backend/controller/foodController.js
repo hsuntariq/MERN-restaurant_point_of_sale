@@ -1,7 +1,12 @@
 const Food = require("../models/foodModel");
 const AsyncHandler = require('express-async-handler')
 const getFood = AsyncHandler(async(req, res) => {
-    const food = await Food.find();
+    const food = await Food.find().sort({_id:-1});
+    res.status(200).json(food);
+});
+const getSingleItem = AsyncHandler(async(req, res) => {
+    const id = req.params.id;
+    const food = await Food.find({_id:id});
     res.status(200).json(food);
 });
 
@@ -47,5 +52,6 @@ module.exports = {
     getFood,
     postFood,
     updateFood,
-    deleteFood
+    deleteFood,
+    getSingleItem,
 }

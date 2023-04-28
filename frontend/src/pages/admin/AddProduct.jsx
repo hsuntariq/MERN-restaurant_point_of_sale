@@ -45,27 +45,24 @@ const AddProduct = () => {
     }
 
     // handle the image upload
-    const uploadImage = async () => {
+    
+    const uploadImage = async() => {
         const data = new FormData();
         data.append('file', image);
         data.append('upload_preset', 'vgvxg0kj');
-        try {
-            setUploading(true);
-            let response = await fetch('https://api.cloudinary.com/v1_1/djo5zsnlq/image/upload', {
-                method: 'post',
-                body: data,
-            });
-            setUploading(false);
-            return response.url;
-        } catch (error) {
-            console.log(error)
-        }
+        let res = await fetch('https://api.cloudinary.com/v1_1/djo5zsnlq/image/upload', {
+            method: 'post',
+            body:data,
+        })
+        const urlData = await res.json();
+        return urlData.url;
     }
     // handle the submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         // upload to cloudinary
         const imageURL = await uploadImage(image);
+        console.log(imageURL)
         // data to be sent to the backend
         const itemData = {
             name,price,info,imageURL

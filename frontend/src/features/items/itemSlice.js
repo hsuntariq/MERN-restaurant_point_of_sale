@@ -36,6 +36,17 @@ export const getItems = createAsyncThunk('items/getItems', async (_, thunkApi) =
     }
 })
 
+// get single item
+export const findSingleItem = createAsyncThunk('items/singleItem',async(id,thunkApi)=>{
+    try {
+        return await itemService.findItem(id);
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) ||
+            error.message || error.toString();
+        return thunkApi.rejectWithValue(message);
+    }
+})
+
 // create the slice
 export const itemSlice = createSlice({
     name: 'item',
@@ -46,7 +57,7 @@ export const itemSlice = createSlice({
             state.isError = false;
             state.isSuccess = false;
             state.message = ''
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -61,7 +72,7 @@ export const itemSlice = createSlice({
             .addCase(postItems.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.items = action.payload;
+                state.items.push(action.payload);
             })
             .addCase(getItems.pending, (state) => {
                 state.isLoading = true;
@@ -76,10 +87,24 @@ export const itemSlice = createSlice({
                 state.isSuccess = true;
                 state.items = action.payload;
             })
+            .addCase(findSingleItem.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(findSingleItem.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(findSingleItem.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.items = action.payload;
+            })
     }
 })
 
 export const {
-    resetState
+    resetState,
+    addToCart
 } = itemSlice.actions;
 export default itemSlice.reducer
